@@ -1,0 +1,123 @@
+{
+  "name": "cascade-kit-tools",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "CSS cascade tools for React: layout utilities, mixin system, scoped styles, and className helper",
+  "license": "MIT",
+  "author": "msanbira",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msanbira/cascade-kit-tools.git"
+  },
+  "homepage": "https://github.com/msanbira/cascade-kit-tools#readme",
+  "bugs": {
+    "url": "https://github.com/msanbira/cascade-kit-tools/issues"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./classNames": {
+      "import": {
+        "types": "./dist/classNames/index.d.ts",
+        "default": "./dist/classNames/index.js"
+      },
+      "require": {
+        "types": "./dist/classNames/index.d.cts",
+        "default": "./dist/classNames/index.cjs"
+      }
+    },
+    "./mixin": {
+      "import": {
+        "types": "./dist/mixin/index.d.ts",
+        "default": "./dist/mixin/index.js"
+      },
+      "require": {
+        "types": "./dist/mixin/index.d.cts",
+        "default": "./dist/mixin/index.cjs"
+      }
+    },
+    "./mixin/styles": {
+      "import": "./dist/mixin/mixin.css",
+      "require": "./dist/mixin/mixin.css"
+    },
+    "./scopedStyle": {
+      "import": {
+        "types": "./dist/scopedStyle/index.d.ts",
+        "default": "./dist/scopedStyle/index.js"
+      },
+      "require": {
+        "types": "./dist/scopedStyle/index.d.cts",
+        "default": "./dist/scopedStyle/index.cjs"
+      }
+    },
+    "./layoutUtils": {
+      "import": {
+        "types": "./dist/layoutUtils/index.d.ts",
+        "default": "./dist/layoutUtils/index.js"
+      },
+      "require": {
+        "types": "./dist/layoutUtils/index.d.cts",
+        "default": "./dist/layoutUtils/index.cjs"
+      }
+    },
+    "./layoutUtils/styles": {
+      "import": "./dist/layoutUtils/layoutUtils.css",
+      "require": "./dist/layoutUtils/layoutUtils.css"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.17.0",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    "globals": "^15.14.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "~5.6.2",
+    "typescript-eslint": "^8.18.2",
+    "vite": "^6.0.5",
+    "vite-plugin-dts": "^4.4.0"
+  },
+  "keywords": [
+    "css",
+    "cascade",
+    "layers",
+    "react",
+    "mixin",
+    "scoped-styles",
+    "layout-utilities"
+  ]
+}
