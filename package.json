@@ -1,6 +1,6 @@
 {
   "name": "cascade-kit-tools",
-  "version": "0.1.0",
+  "version": "0.1.4",
   "type": "module",
   "description": "CSS cascade tools for React: layout utilities, mixin system, scoped styles, and className helper",
   "license": "MIT",
@@ -78,7 +78,9 @@
     "./layoutUtils/styles": {
       "import": "./dist/layoutUtils/layoutUtils.css",
       "require": "./dist/layoutUtils/layoutUtils.css"
-    }
+    },
+    "./layoutUtils/layoutUtils.css": "./dist/layoutUtils/layoutUtils.css",
+    "./mixin/mixin.css": "./dist/mixin/mixin.css"
   },
   "files": [
     "dist"

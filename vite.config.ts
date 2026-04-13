@@ -18,8 +18,10 @@ export default defineConfig({
         index: resolve(__dirname, 'src/index.ts'),
         'classNames/index': resolve(__dirname, 'src/classNames/index.ts'),
         'mixin/index': resolve(__dirname, 'src/mixin/index.ts'),
+        'mixin/styles': resolve(__dirname, 'src/mixin/styles.ts'),
         'scopedStyle/index': resolve(__dirname, 'src/scopedStyle/index.tsx'),
         'layoutUtils/index': resolve(__dirname, 'src/layoutUtils/index.ts'),
+        'layoutUtils/styles': resolve(__dirname, 'src/layoutUtils/styles.ts'),
       },
       formats: ['es', 'cjs'],
     },
@@ -29,10 +31,11 @@ export default defineConfig({
         preserveModules: false,
         assetFileNames: (assetInfo) => {
           if (assetInfo.name?.endsWith('.css')) {
-            if (assetInfo.name.includes('mixin')) {
+            const source = assetInfo.originalFileNames?.[0] || '';
+            if (source.includes('mixin')) {
               return 'mixin/mixin.css';
             }
-            if (assetInfo.name.includes('layoutUtils')) {
+            if (source.includes('layoutUtils')) {
               return 'layoutUtils/layoutUtils.css';
             }
           }
