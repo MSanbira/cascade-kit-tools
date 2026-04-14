@@ -473,67 +473,150 @@ import 'cascade-kit-tools/mixin/mixin.css'; // Required CSS
 
 ---
 
-### `ScopedStyle` Component
+## ScopedStyle — Instance-Level Style Customization
 
-Per-instance style overrides using CSS `@scope`.
+`ScopedStyle` provides per-instance style overrides using native CSS `@scope`. It renders a `<style>` tag inside the component that scopes styles to that specific instance.
 
-**When to use:**
-- **Backend/user inputs** — User-selected brand colors, CMS values, dynamic data not known at build time
-- **Extreme customizations** — One-off styling that doesn't fit the design system (promotional cards, special states)
-- **Prototype & experimentation** — Quick iteration without creating new CSS classes
-- **Third-party integration** — Matching external brand guidelines or embedded widgets
-
-**Why @scope over inline styles?**
-- Cascade respect: lives in `@layer component-overrides`, so `user-overrides` still wins
-- Full CSS selectors: `&:hover`, `@media`, child selectors — not possible with inline
-- Token inheritance: override `--color-primary` once, all children inherit automatically
-
-**Use sparingly — choose which components support it:**
-
-Not every component needs `scopedStyle` support. Add it only to **container-like components** where per-instance theming makes sense. In CascadeKit, only these support it: `Button`, `Box`, `Card`, `Section`.
-
-Simple components like `Badge`, `Text`, `CodeBlock` don't need it — they inherit from parent scope or use variants.
+### How It Works
 
 ```tsx
-// Components expose scopedStyle as a prop (not a child)
-<Card 
-  title="Custom Theme" 
-  scopedStyle={{
-    '--color-primary': '#10b981',
-    '--color-border': '#10b981',
-    '&:hover': { transform: 'scale(1.02)' }
-  }}
->
-  <Button variant="primary">Inherits green primary</Button>
-  <Badge variant="primary">Also green</Badge>
-</Card>
-
-// Box for layout containers
-<Box scopedStyle={{ '--color-bg': '#f0f9ff' }}>
-  ...
-</Box>
+<ScopedStyle style={scopedStyle} layer={scopedLayer} />
 ```
 
-**Implementing scopedStyle in a component:**
+Outputs:
+```html
+<style>
+  @layer component-overrides {
+    @scope {
+      :scope {
+        --color-primary: #10b981;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        .Card--title { color: #000; }
+      }
+    }
+  }
+</style>
+```
+
+### ScopedStylesObj Type
+
+The `style` prop accepts an object that can contain:
+- **CSS custom properties**: `'--color-primary': '#10b981'`
+- **CSS properties** (camelCase): `boxShadow: '...'`, `transform: '...'`
+- **Nested selectors**: `'.Card--title': { color: '#000' }`
+
+```ts
+type ScopedStylesObj = CSSProperties & CSSVars & { [selector: string]: ScopedStylesObj };
+```
+
+### Layer Control
+
+The `layer` prop controls CSS specificity (default: `'component-overrides'`):
+- `'base'` | `'utils'` | `'components'` | `'pages'` | `'component-overrides'` | `'user-overrides'`
+
+### Which Components Should Support ScopedStyle
+
+**NOT every component needs `scopedStyle`.** Only add it to:
+- **Containers**: Card, Box, Modal, Panel, Section
+- **Dynamic/themed components**: Components likely to need per-instance customization
+
+**DO NOT add to primitives** like Button, Badge, Text — use variants instead.
+
+### Component Implementation Pattern
 
 ```tsx
 import { ScopedStyle, type ScopedStylesObj, type LayerOptions } from 'cascade-kit-tools/scopedStyle';
 
 interface CardProps {
+  children: React.ReactNode;
+  mixin?: MixinProps;
   scopedStyle?: ScopedStylesObj;
   scopedLayer?: LayerOptions;
-  // ...other props
 }
 
-export function Card({ scopedStyle, scopedLayer = 'component-overrides', children }: CardProps) {
+export function Card({ children, mixin, scopedStyle, scopedLayer }: CardProps) {
+  const { className: mixinClassName, style: mixinStyle } = getMixin(mixin);
+  
   return (
-    <div className="Card--root">
-      {scopedStyle && <ScopedStyle style={scopedStyle} layer={scopedLayer} />}
+    <div className={classNames('Card--root', [mixinClassName])} style={mixinStyle}>
+      <ScopedStyle style={scopedStyle} layer={scopedLayer} />
       {children}
     </div>
   );
 }
 ```
+
+### Usage Examples
+
+```tsx
+// Token overrides — children inherit these
+<Card scopedStyle={{ 
+  '--color-primary': '#10b981',
+  '--color-border': '#10b981',
+}}>
+  <Button variant="primary">Inherits green</Button>
+</Card>
+
+// Direct CSS properties
+<Card scopedStyle={{
+  boxShadow: '0 4px 20px rgba(16, 185, 129, 0.3)',
+  background: 'linear-gradient(135deg, #fffbeb, #fef3c7)',
+}}>
+  Content
+</Card>
+
+// Nested selectors (scoped to this instance)
+<Card scopedStyle={{
+  '.Card--title': { color: '#000', fontWeight: 700 },
+}}>
+  Content
+</Card>
+
+// Combined
+<Card scopedStyle={{
+  '--color-primary': '#f59e0b',
+  borderStyle: 'dashed',
+  '.Card--title': { textTransform: 'uppercase' }
+}} scopedLayer="user-overrides">
+  Content
+</Card>
+
+// Dynamic values from state/props
+const [progress, setProgress] = useState(65);
+const [themeColor, setThemeColor] = useState('#6366f1');
+
+<Card scopedStyle={{
+  '--progress': `${progress}%`,
+  '--color-primary': themeColor,
+  '--color-border': themeColor,
+}}>
+  <ProgressBar />  {/* Uses var(--progress) in its CSS */}
+  <Button variant="primary">Themed to {themeColor}</Button>
+</Card>
+
+// Conditional styling
+<Card scopedStyle={{
+  '--color-primary': isError ? 'var(--color-error)' : 'var(--color-success)',
+  opacity: isLoading ? 0.6 : 1,
+  pointerEvents: isLoading ? 'none' : 'auto',
+}}>
+  <StatusContent />
+</Card>
+```
+
+### ScopedStyle vs Inline Styles
+
+Never use inline `style` prop for customization. Use `scopedStyle` instead:
+
+```tsx
+// ❌ WRONG — no layer control, breaks cascade
+<div style={{ boxShadow: '...' }} />
+
+// ✅ CORRECT — respects layers, supports nesting
+<Card scopedStyle={{ boxShadow: '...' }} />
+```
+
+The only acceptable use of the `style` attribute is for mixin-generated CSS variables via `getMixin()`.
 
 ---
 
@@ -598,6 +681,14 @@ import './styles/theme.css';            // Theme overrides (optional)
 
 ---
 
+## General Suggestions for Initial App Build
+
+- **Create small, reusable components** — Keep page-level styling to a minimum. Pages should compose components, not define new styles.
+- **Keep App.tsx minimal** — Only CSS imports and top-level routing. Better separation of concerns.
+- **Reach for cascade-kit-tools first** — Before adding new class names, check if `mixin`, `layoutUtils`, or `scopedStyle` already solves the problem. Avoid bloating stylesheets with one-off classes.
+
+---
+
 ## Quick Start Checklist
 
 1. ☐ Create `layers.css` with layer order declaration
@@ -608,3 +699,5 @@ import './styles/theme.css';            // Theme overrides (optional)
 6. ☐ Use `classNames` for class composition
 7. ☐ Use `getMixin` for responsive spacing props
 8. ☐ Use layout utils classes for flex/grid layouts
+9. ☐ Use `scopedStyle` for per-instance customizations and dynamic values
+
