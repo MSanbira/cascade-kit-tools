@@ -16,6 +16,8 @@ npm install cascade-kit-tools
 
 This package includes a **`PROMPT_GUIDE.md`** file designed to be used as context when prompting AI assistants to build React applications.
 
+For an even better experience, use **[cascade-kit-mcp](https://www.npmjs.com/package/cascade-kit-mcp)**—an MCP server that provides CascadeKit tools and documentation directly to Claude Desktop, Windsurf, Cursor, and other MCP-compatible clients.
+
 ### How to use:
 
 1. Copy the contents of `PROMPT_GUIDE.md` (or reference the file)

@@ -1,6 +1,6 @@
 {
   "name": "cascade-kit-tools",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "type": "module",
   "description": "CSS cascade tools for React: layout utilities, mixin system, scoped styles, and className helper",
   "license": "MIT",

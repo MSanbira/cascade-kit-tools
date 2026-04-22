@@ -36,7 +36,7 @@
   }
 
   /* Medium screen */
-  @media (min-width: 640px) and (max-width: 1023px) {
+  @media (min-width: 640px) and (max-width: 799px) {
     .Mixin--margin-medium-screen { margin: var(--mixin-margin-medium-screen); }
     .Mixin--padding-medium-screen { padding: var(--mixin-padding-medium-screen); }
     .Mixin--display-medium-screen { display: var(--mixin-display-medium-screen); }
@@ -55,7 +55,7 @@
   }
 
   /* Big screen */
-  @media (min-width: 1024px) {
+  @media (min-width: 800px) {
     .Mixin--margin-big-screen { margin: var(--mixin-margin-big-screen); }
     .Mixin--padding-big-screen { padding: var(--mixin-padding-big-screen); }
     .Mixin--display-big-screen { display: var(--mixin-display-big-screen); }
